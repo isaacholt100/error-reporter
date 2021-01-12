@@ -17,21 +17,25 @@ impl<'a> ErrorReporter<'a> {
     }
     fn print_summary(warning_count: usize, error_count: usize) {
         println!(
-            "{warning_count} {warning}{warning_suffix}, {error_count} {error}{error_suffix} emitted\n",
+            "{warning_count} {warning}, {error_count} {error} emitted\n",
             warning_count = warning_count,
-            warning = style!("warning", [BOLD_STYLE, WARNING_COLOR]),
-            warning_suffix = if warning_count == 1 {
-                ""
-            } else { 
-                "s"
-            },
+            warning = style!(format!(
+                "warning{}",
+                if warning_count == 1 {
+                    ""
+                } else { 
+                    "s"
+                }
+            ), [BOLD_STYLE, WARNING_COLOR]),
             error_count = error_count,
-            error = style!("error", [BOLD_STYLE, ERROR_COLOR]),
-            error_suffix = if error_count == 1 {
-                ""
-            } else {
-                "s"
-            }
+            error = style!(format!(
+                "error{}",
+                if error_count == 1 {
+                    ""
+                } else {
+                    "s"
+                }
+            ), [BOLD_STYLE, ERROR_COLOR])
         );
     }
     pub fn report(&self, errors: Vec<Error>) {
@@ -62,7 +66,7 @@ impl<'a> ErrorReporter<'a> {
         let (severity_name, severity_color) = error.severity.name_and_color();
 
         let start_col = (error.position.0).1;
-        let end_col = (error.position.1).1;
+        let end_col = (error.position.1).1 - 1; // So indexing works properly
         let start_line_number = (error.position.0).0;
         let end_line_number = (error.position.1).0;
 
@@ -81,6 +85,8 @@ impl<'a> ErrorReporter<'a> {
             start_line_number,
             start_col
         );
+        
+        let start_col = start_col - 1; // So indexing works properly
 
         println!("{}\n{}\n", title, source_info);
 
