@@ -1,6 +1,8 @@
 mod constants;
 mod error;
 mod reporter;
+mod macros;
+mod slice;
 
 use reporter::ErrorReporter;
 use error::{Error, Severity, Location};

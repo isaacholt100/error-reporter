@@ -1,4 +1,5 @@
 use std::fmt::{self, Display, Formatter};
+use crate::constants::{ERROR_COLOR, WARNING_COLOR};
 
 type Position = (usize, usize);
 
@@ -6,6 +7,14 @@ type Position = (usize, usize);
 pub enum Severity {
     Error,
     Warning,
+}
+impl Severity {
+    pub fn name_and_color(&self) -> (&str, &str) {
+        match self {
+            Severity::Error => ("error", ERROR_COLOR),
+            Severity::Warning => ("warning", WARNING_COLOR),
+        }
+    }
 }
 
 pub struct Error {
