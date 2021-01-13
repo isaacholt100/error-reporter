@@ -1,6 +1,6 @@
 use crate::constants::*;
 use crate::error::{Error, Severity};
-use crate::{format_line_start, style};
+use crate::{format_line_start, style, sgl_or_pl};
 use crate::slice::Slice;
 
 pub struct ErrorReporter<'a> {
@@ -19,23 +19,9 @@ impl<'a> ErrorReporter<'a> {
         println!(
             "{warning_count} {warning}, {error_count} {error} emitted\n",
             warning_count = warning_count,
-            warning = style!(format!(
-                "warning{}",
-                if warning_count == 1 {
-                    ""
-                } else { 
-                    "s"
-                }
-            ), [BOLD_STYLE, WARNING_COLOR]),
+            warning = style!(sgl_or_pl!(warning_count, "warning"), [BOLD_STYLE, WARNING_COLOR]),
             error_count = error_count,
-            error = style!(format!(
-                "error{}",
-                if error_count == 1 {
-                    ""
-                } else {
-                    "s"
-                }
-            ), [BOLD_STYLE, ERROR_COLOR])
+            error = style!(sgl_or_pl!(error_count, "error"), [BOLD_STYLE, ERROR_COLOR])
         );
     }
     pub fn report(&self, errors: Vec<Error>) {
@@ -80,10 +66,11 @@ impl<'a> ErrorReporter<'a> {
             style!(error.msg, [BOLD_STYLE]),
         );
         let source_info = format!(
-            "--> {}:{}:{}",
-            error.location,
-            start_line_number,
-            start_col
+            "--> {location}{colon}{line}{colon}{col}",
+            location = error.location,
+            line = start_line_number,
+            col = start_col,
+            colon = style!(":", [DIM_STYLE]),
         );
         
         let start_col = start_col - 1; // So indexing works properly
