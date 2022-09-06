@@ -17,10 +17,8 @@ impl<'a> ErrorReporter<'a> {
     }
     fn print_summary(warning_count: usize, error_count: usize) {
         println!(
-            "{warning_count} {warning}, {error_count} {error} emitted\n",
-            warning_count = warning_count,
+            "{warning}, {error} emitted\n",
             warning = style!(sgl_or_pl!(warning_count, "warning"), [BOLD_STYLE, WARNING_COLOR]),
-            error_count = error_count,
             error = style!(sgl_or_pl!(error_count, "error"), [BOLD_STYLE, ERROR_COLOR])
         );
     }
